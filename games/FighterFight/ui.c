@@ -7,7 +7,7 @@
 
 #define CLASS_NAME_BK		"bk_class"
 #define CLASS_NAME_FIGHT	"fight_class"
-#define CLASS_NAME_FLYS		"flys_class"ssssssssssssssssss
+#define CLASS_NAME_FLYS		"flys_class"
 
 #define BITMAP_FILE_BK		"cloud.bmp"
 
@@ -32,6 +32,7 @@ HWND hwndBackground;
 
 HBITMAP hbmpFighter;
 HBITMAP hbmpBackground;
+HBITMAP hbmpEnemy;
 
 #define COLOR_BULLET	RGB(0,255,0)
 #define COLOR_ENEMY		RGB(255,255,0)
@@ -193,6 +194,7 @@ HWND BackgroundWindowCreate(HINSTANCE hinstance)
 
 LONG FightWindowPaint(HWND hwnd)
 {
+	HDC hdcBitmapSrcEnemy;
 	HDC hdc, hdcMem, hdcBitmapSrc;
 	HBITMAP hBitmap;
 	//PAINTSTRUCT ps;
@@ -200,6 +202,7 @@ LONG FightWindowPaint(HWND hwnd)
 	int num, i;
 	LPAUTO_FLY auto_fly;
 	BITMAP bmp;
+	BITMAP bmpEnemy;
 
 	RECT rect;
 	HFONT hFont;
@@ -266,6 +269,13 @@ LONG FightWindowPaint(HWND hwnd)
 	SetTextColor(hdcMem, RGB(255, 0, 0));
 	TextOut(hdcMem, 10, 10, debug_info, strlen(debug_info));
 
+	//»­µÐ»ú
+	hdcBitmapSrcEnemy = CreateCompatibleDC(hdc);
+	SelectObject(hdcBitmapSrcEnemy, hbmpEnemy);
+	GetObject(hbmpEnemy, sizeof(BITMAP), &bmpEnemy);
+	hbmpEnemy = LoadImage(NULL, "µÐ»ú.bmp",
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+
 	for (i = 0; i < num; i++)
 	{
 		auto_fly = get_fly_at(i);
@@ -292,12 +302,20 @@ LONG FightWindowPaint(HWND hwnd)
 			}
 			else
 			{
-				SelectObject(hdcMem, hbrEnemy);
+				/*SelectObject(hdcMem, hbrEnemy);
 				Ellipse(hdcMem,
 					get_fly_x(auto_fly) - 20,
 					get_fly_y(auto_fly) - 10,
 					get_fly_x(auto_fly) + 20,
-					get_fly_y(auto_fly) + 10);
+					get_fly_y(auto_fly) + 10);*/
+					
+					//»­µÐ»ú
+				StretchBlt(hdcMem,
+					auto_fly->x - FIGHTER_WIDTH / 2, auto_fly->y,
+					FIGHTER_WIDTH, FIGHTER_HEIGHT,
+					hdcBitmapSrcEnemy,
+					0, 0, bmpEnemy.bmWidth, bmpEnemy.bmHeight,
+					SRCCOPY);
 			}
 		}
 
