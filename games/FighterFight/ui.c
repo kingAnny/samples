@@ -34,7 +34,7 @@ HBITMAP hbmpFighter;
 HBITMAP hbmpBackground;
 HBITMAP hbmpEnemy;
 
-#define COLOR_BULLET	RGB(0,255,0)
+#define COLOR_BULLET	RGB(21,60,255)
 #define COLOR_ENEMY		RGB(255,255,0)
 #define COLOR_BOMB		RGB(255, 0, 0)
 
@@ -260,21 +260,21 @@ LONG FightWindowPaint(HWND hwnd)
 	num = get_flys_num();
 
 	// 创建了一个字体对象
-	hFont = CreateFont(20, 0, 0, 0, FW_DONTCARE, 0, FALSE, 0, DEFAULT_CHARSET, OUT_OUTLINE_PRECIS,
+	hFont = CreateFont(20, 0, 0, 0, FW_HEAVY, 0, FALSE, 0, OEM_CHARSET, OUT_OUTLINE_PRECIS,
 		CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, VARIABLE_PITCH, TEXT("Consolas"));
 
 
-	wsprintf(debug_info, "DEBUG_INFO: objects count: %d\n 得分：0x%p", num, get_sorce());
+	wsprintf(debug_info, "Objects count: %d\n    Scores:0x%p", num, get_sorce());
 	SelectObject(hdcMem, hFont);
-	SetTextColor(hdcMem, RGB(255, 0, 0));
+	SetTextColor(hdcMem, RGB(0, 0, 0));
 	TextOut(hdcMem, 10, 10, debug_info, strlen(debug_info));
 
 	//画敌机
-	hdcBitmapSrcEnemy = CreateCompatibleDC(hdc);
+	/*hdcBitmapSrcEnemy = CreateCompatibleDC(hdc);
 	SelectObject(hdcBitmapSrcEnemy, hbmpEnemy);
 	GetObject(hbmpEnemy, sizeof(BITMAP), &bmpEnemy);
 	hbmpEnemy = LoadImage(NULL, "敌机.bmp",
-		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);*/
 
 	for (i = 0; i < num; i++)
 	{
@@ -282,7 +282,7 @@ LONG FightWindowPaint(HWND hwnd)
 		if (auto_fly->type == FLY_TYPE_BULLET)
 		{
 			SelectObject(hdcMem, hbrBullet);
-			Ellipse(hdcMem,
+			Rectangle(hdcMem,
 				get_fly_x(auto_fly) - 4,
 				get_fly_y(auto_fly) - 6,
 				get_fly_x(auto_fly) + 4,
@@ -302,20 +302,23 @@ LONG FightWindowPaint(HWND hwnd)
 			}
 			else
 			{
-				/*SelectObject(hdcMem, hbrEnemy);
-				Ellipse(hdcMem,
-					get_fly_x(auto_fly) - 20,
-					get_fly_y(auto_fly) - 10,
-					get_fly_x(auto_fly) + 20,
-					get_fly_y(auto_fly) + 10);*/
+				SelectObject(hdcMem, hbrEnemy);
+				Pie(hdcMem,
+					get_fly_x(auto_fly)-10 ,
+					get_fly_y(auto_fly)-20,
+					get_fly_x(auto_fly)+10 ,
+					get_fly_y(auto_fly)+20,
+					10,20,210,10
+					
+					);
 					
 					//画敌机
-				StretchBlt(hdcMem,
+				/*StretchBlt(hdcMem,
 					auto_fly->x - FIGHTER_WIDTH / 2, auto_fly->y,
 					FIGHTER_WIDTH, FIGHTER_HEIGHT,
 					hdcBitmapSrcEnemy,
 					0, 0, bmpEnemy.bmWidth, bmpEnemy.bmHeight,
-					SRCCOPY);
+					SRCCOPY);*/
 			}
 		}
 

@@ -4,7 +4,7 @@
 #define _AUTO_FLY_H
 
 #define MAX_X 500
-#define MAX_Y 800
+#define MAX_Y 500
 
 typedef enum _FLY_STATE
 {
